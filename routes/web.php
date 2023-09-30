@@ -33,5 +33,8 @@ Route::get('getTransactionList', [App\Http\Controllers\TransactionController::cl
 Route::get('deposit', [App\Http\Controllers\TransactionController::class, 'depositIndex'])->name('deposit');
 Route::post('deposit', [App\Http\Controllers\TransactionController::class, 'deposit'])->name('deposit');
 
+Route::get('withdraw', [App\Http\Controllers\TransactionController::class, 'withdrawIndex'])->name('withdraw');
+Route::post('withdraw', [App\Http\Controllers\TransactionController::class, 'withdraw'])->name('withdraw');
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

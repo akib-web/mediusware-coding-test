@@ -58,10 +58,39 @@ class TransactionController extends Controller
         $user->balance += $transaction->amount;
         $user->save();
 
-        return redirect()->route('transactions');
+        return redirect()->route('transactions')->with(['success' => 'You have deposited successfully!']);;
     }
 
-    public function withdraw()
+    public function withdrawIndex()
     {
+        return view('withdraw');
+    }
+    public function withdraw(Request $request)
+    {
+        $validator = Validator::make($request->all(), [ // <---
+            'user_id' => ['required', 'exists:users,id'],
+            'amount' => ['required', 'numeric'],
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->messages());
+            // response()->json(['errors' => $validator->messages()]);
+        }
+
+        $transaction = new Transaction();
+        $transaction->user_id = $request->user_id;
+        $transaction->amount = $request->amount;
+        $transaction->transaction_type = 'WITHDRAW';
+        $transaction->date = date('Y-m-d H:i:s');
+
+        $user = User::find($transaction->user_id);
+        $user->balance -= $transaction->amount;
+
+        if ($user->balance > $transaction->amount) {
+            $user->save();
+            $transaction->save();
+        }
+
+        return redirect()->route('transactions')->with(['success' => 'You have withdrawn successfully!']);
     }
 }
