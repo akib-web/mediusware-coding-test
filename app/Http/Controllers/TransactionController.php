@@ -84,13 +84,31 @@ class TransactionController extends Controller
         $transaction->date = date('Y-m-d H:i:s');
 
         $user = User::find($transaction->user_id);
-        $user->balance -= $transaction->amount;
+
+
+        if ($user->account_type == 'INDIVIDUAL') {
+            $fee = (($request->amount * 0.015) / 100);
+            $reaining_amount = $request->amount - 1000;
+
+            if (date('D', strtotime($transaction->date)) == 'Fri') {
+                $fee = 0;
+            } else if ($reaining_amount > 0) {
+                $fee = (($reaining_amount * 0.015) / 100);
+            }
+        } else if ($user->account_type == 'BUSINESS') {
+            $fee = (($request->amount * 0.025) / 100);
+        }
+        $transaction->fee = $fee;
+        $user->balance -= ($transaction->amount + $fee);
+        // return $fee;
 
         if ($user->balance > $transaction->amount) {
             $user->save();
             $transaction->save();
+
+            return redirect()->route('transactions')->with(['success' => 'You have withdrawn successfully!']);
         }
 
-        return redirect()->route('transactions')->with(['success' => 'You have withdrawn successfully!']);
+        return redirect()->route('transactions')->with(['error' => 'This user has no sufficient balance!']);
     }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger('user_id');
             $table->enum('transaction_type', ['DEPOSIT', 'WITHDRAW']);
             $table->double('amount', 8, 2);
-            $table->decimal('fee', 8, 2)->default(0);
+            $table->decimal('fee', 8, 6)->default(0);
             $table->date('date');
             $table->timestamps();
         });
