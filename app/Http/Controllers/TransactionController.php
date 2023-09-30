@@ -85,6 +85,7 @@ class TransactionController extends Controller
 
         $user = User::find($transaction->user_id);
 
+        // dd($user->transactions);
 
         if ($user->account_type == 'INDIVIDUAL') {
             $fee = (($request->amount * 0.015) / 100);
@@ -92,12 +93,19 @@ class TransactionController extends Controller
 
             if (date('D', strtotime($transaction->date)) == 'Fri') {
                 $fee = 0;
+            } else if ($this->totalTransactionLastMonth($user->transactions)) {
+                $fee = 0;
             } else if ($reaining_amount > 0) {
                 $fee = (($reaining_amount * 0.015) / 100);
             }
         } else if ($user->account_type == 'BUSINESS') {
             $fee = (($request->amount * 0.025) / 100);
+            if ($this->totalWithdrawalAmount($user->transactions) >= 50000) {
+                $fee = (($reaining_amount * 0.015) / 100);
+            }
         }
+
+
         $transaction->fee = $fee;
         $user->balance -= ($transaction->amount + $fee);
         // return $fee;
@@ -110,5 +118,29 @@ class TransactionController extends Controller
         }
 
         return redirect()->route('transactions')->with(['error' => 'This user has no sufficient balance!']);
+    }
+
+    public function totalWithdrawalAmount($transactions)
+    {
+        // $transactions = $this->transactions();
+        $totalWithdrawalAmount = 0;
+        foreach ($transactions as $key => $value) {
+            if ($value->transaction_type == "WITHDRAW") {
+                $totalWithdrawalAmount += $value->amount;
+            }
+        }
+        return $totalWithdrawalAmount;
+    }
+    public function totalTransactionLastMonth($transactions)
+    {
+        // $transactions = $this->transactions();
+
+        foreach ($transactions as $key => $value) {
+            $prevMonth = strtotime("-1 month");
+            $prevMonth = date("Y-m-d", $prevMonth);
+            if ($this->totalWithdrawalAmount($transactions) > 5000 && $value->date <= $prevMonth) {
+                return true;
+            }
+        }
     }
 }
