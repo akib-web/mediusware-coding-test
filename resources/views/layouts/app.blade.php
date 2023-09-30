@@ -12,6 +12,10 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="{{asset('assets/css/bootstrap.min.css')}}">
+
+    <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -76,5 +80,15 @@
             @yield('content')
         </main>
     </div>
+
+
+<!-- jQuery library -->
+<script src="{{asset('assets/js/jquery.min.js')}}"></script>
+
+<!-- Popper JS -->
+<script src="{{asset('assets/js/popper.min.js')}}"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="{{asset('assets/js/bootstrap.min.js')}}"></script>
 </body>
 </html>

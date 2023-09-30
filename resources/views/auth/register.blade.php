@@ -26,6 +26,23 @@
                         </div>
 
                         <div class="row mb-3">
+                            <label for="account_type" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+
+                            <div class="col-md-6">
+
+                                <select class="form-control @error('account_type') is-invalid @enderror"  name="account_type" id="account_type" required>
+                                    <option value="INDIVIDUAL">Individual</option>
+                                    <option value="BUSINESS">Business</option>
+                                </select>
+
+                                @error('account_type')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
                             <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
 
                             <div class="col-md-6">
